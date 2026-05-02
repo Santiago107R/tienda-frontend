@@ -19,7 +19,7 @@ const CustomHeader = ({ title, links }: Props) => {
                                     onClick={onClick} 
                                     className="flex items-center gap-2 hover:text-gray-400 cursor-pointer"
                                 >
-                                    {Icon && <Icon size={30} />}
+                                    {Icon && <Icon size={25} />}
                                     {name && <span className="text-2xl">{name}</span>}
                                 </button>
                             ) : (
@@ -27,7 +27,7 @@ const CustomHeader = ({ title, links }: Props) => {
                                     to={url} 
                                     className="flex items-center gap-2 hover:text-gray-400 transition-colors"
                                 >
-                                    {Icon && <Icon size={30} />}
+                                    {Icon && <Icon size={25} />}
                                     {name && <span className="text-2xl">{name}</span>}
                                 </Link>
                             )}

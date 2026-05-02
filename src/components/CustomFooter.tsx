@@ -7,7 +7,7 @@ interface Props {
 
 const CustomFooter = ({ description, links }: Props) => {
     return (
-        <footer className='border-t-2 p-8'>
+        <footer className='border-t-2 border-t-gray-300 p-8'>
             <div className='max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4'>
                 <p className='text-gray-500 text-sm'>
                     {description}
@@ -16,7 +16,7 @@ const CustomFooter = ({ description, links }: Props) => {
                 <div className="flex gap-6">
                     {
                         links?.map(({ name, url }) => (
-                            <a href={url} className="hover:text-blue-600 transition-colors">{name}</a>
+                            <a href={url} className="text-gray-500 hover:text-blue-600 transition-colors">{name}</a>
                         ))
                     }
                 </div>
