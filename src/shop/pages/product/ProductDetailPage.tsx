@@ -1,16 +1,18 @@
 import { Link, useParams } from "react-router"
-import { products } from "../home/HomePage";
 import { ChevronLeftCircle } from "lucide-react";
 import useUtils from "@/hooks/useUtils";
+import useProduct from "@/hooks/useProduct";
 
 const ProductDetailPage = () => {
-    const {numberFormat} = useUtils()
-
+    const { numberFormat } = useUtils()
     const { slug } = useParams();
 
-    const product = products.find((prod) => prod.slug === slug)
+    if (!slug) return
 
-    if (!product) {
+    const { productQuery } = useProduct(slug)
+
+
+    if (!productQuery.data) {
         return (
             <div className="max-w-6xl mx-auto m-10 p-4">
                 <div className="text-center py-20 bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200 p-3">
@@ -40,8 +42,8 @@ const ProductDetailPage = () => {
                 {/* Columna de Imagen */}
                 <div className="bg-gray-50 flex justify-center items-center p-8">
                     <img
-                        src={product.image || '/assets/img/no_foto.png'}
-                        alt={product.title}
+                        src={productQuery.data?.image || '/assets/img/no_foto.png'}
+                        alt={productQuery.data.title}
                         className="w-full h-auto object-contain hover:scale-105 transition-transform duration-300 ease-in-out drop-shadow-xl"
                     />
                 </div>
@@ -49,15 +51,15 @@ const ProductDetailPage = () => {
                 {/* Columna de Información */}
                 <div className="p-8 flex flex-col">
                     <span className="text-sm font-semibold text-indigo-600 uppercase tracking-widest mb-2">
-                        {product.gender}
+                        {productQuery.data.gender}
                     </span>
 
                     <h1 className="text-4xl font-extrabold text-gray-800 mb-4 leading-tight">
-                        {product.title}
+                        {productQuery.data.title}
                     </h1>
 
                     <p className="text-3xl font-light text-gray-900 mb-6">
-                        {numberFormat(product.price)} <span className="text-xl font-bold">$</span>
+                        {numberFormat(productQuery.data.price)} <span className="text-xl font-bold">$</span>
                     </p>
 
                     <hr className="mb-6 border-gray-100" />
@@ -65,7 +67,7 @@ const ProductDetailPage = () => {
                     <div className="mb-8">
                         <h3 className="text-sm font-bold text-gray-400 uppercase mb-2">Descripción</h3>
                         <p className="text-gray-600 leading-relaxed">
-                            {product.description}
+                            {productQuery.data.description}
                         </p>
                     </div>
 
@@ -92,9 +94,9 @@ const ProductDetailPage = () => {
                     {/* )} */}
 
                     <div className="mt-auto">
-                        {product.stock !== undefined && (
-                            <p className={`mb-4 text-sm font-medium ${product.stock > 0 ? 'text-green-600' : 'text-red-600'}`}>
-                                ● {product.stock > 0 ? `En stock (${product.stock} unidades)` : 'Agotado'}
+                        {productQuery.data.stock !== undefined && (
+                            <p className={`mb-4 text-sm font-medium ${productQuery.data.stock > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                ● {productQuery.data.stock > 0 ? `En stock (${productQuery.data.stock} unidades)` : 'Agotado'}
                             </p>
                         )}
 

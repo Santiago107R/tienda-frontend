@@ -4,12 +4,11 @@ import { Link } from "react-router"
 interface Props {
     title: string;
     slug: string;
-    id: number;
     image: string;
     price: number;
 }
 
-const ProductCard = ({id, image, title, price, slug}: Props) => {
+const ProductCard = ({image, title, price, slug}: Props) => {
     const {numberFormat} = useUtils()
 
     return (
