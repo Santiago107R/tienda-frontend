@@ -1,16 +1,32 @@
-import { Link, useParams } from "react-router"
+import { useState } from "react";
+import { Link, useParams } from "react-router";
 import { ChevronLeftCircle } from "lucide-react";
 import useUtils from "@/hooks/useUtils";
 import useProduct from "@/hooks/useProduct";
 
 const ProductDetailPage = () => {
-    const { numberFormat } = useUtils()
+    const { numberFormat } = useUtils();
     const { slug } = useParams();
 
-    if (!slug) return
+    const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
 
-    const { productQuery } = useProduct(slug)
+    const toggleSelectedSize = (size: string) => {
+        setSelectedSizes((prev) => {
+            const newSet = new Set(prev || []);
 
+            if (newSet.has(size)) {
+                newSet.delete(size);
+            } else {
+                newSet.add(size);
+            }
+
+            return Array.from(newSet);
+        });
+    };
+
+    if (!slug) return null;
+
+    const { productQuery } = useProduct(slug);
 
     if (!productQuery.data) {
         return (
@@ -28,6 +44,10 @@ const ProductDetailPage = () => {
             </div>
         );
     }
+
+    const hasSizes = !!productQuery.data.sizes?.length;
+
+    const isButtonDisabled = hasSizes && selectedSizes.length === 0;
 
     return (
         <div className="max-w-6xl mx-auto m-10 p-4">
@@ -72,26 +92,26 @@ const ProductDetailPage = () => {
                     </div>
 
                     {/* Selector de Talles */}
-                    {/* {hasSizes && ( */}
+                    {hasSizes && (
                         <div className="mb-8">
                             <h3 className="text-sm font-bold text-gray-400 uppercase mb-3">Talles Disponibles</h3>
                             <div className="flex flex-wrap gap-2">
-                                {/* {sizesArray.map((size) => ( */}
+                                {productQuery.data.sizes!.map((size) => (
                                     <button
-                                        // key={size}
+                                        key={size}
                                         type="button"
-                                        // onClick={() => setSelectedSize(size)}
-                                        className={`px-4 py-2 border-2 rounded-lg text-sm font-medium transition-all cursor-pointer {selectedSize === size
+                                        onClick={() => toggleSelectedSize(size)}
+                                        className={`px-4 py-2 border-2 rounded-lg text-sm font-medium transition-all cursor-pointer ${selectedSizes && selectedSizes.includes(size)
                                             ? 'border-indigo-600 bg-indigo-50 text-indigo-600'
                                             : 'border-gray-200 hover:border-indigo-600'
                                             }`}
                                     >
-                                        {/* {size} */}
+                                        {size}
                                     </button>
-                                {/* ))} */}
+                                ))}
                             </div>
                         </div>
-                    {/* )} */}
+                    )}
 
                     <div className="mt-auto">
                         {productQuery.data.stock !== undefined && (
@@ -101,13 +121,17 @@ const ProductDetailPage = () => {
                         )}
 
                         <button
-                            // disabled={hasSizes && !selectedSize}
-                            className={`w-full py-4 rounded-xl font-bold text-lg transition-all shadow-lg active:scale-95 transform 
-                                 $hasSizes && !selectedSize
-                                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                                    : 'bg-black text-white hover:bg-gray-800'}`}
+                            disabled={isButtonDisabled || productQuery.data.stock === 0}
+                            className={`w-full py-4 rounded-xl font-bold text-lg transition-all shadow-lg active:scale-95 transform ${isButtonDisabled || productQuery.data.stock === 0
+                                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
+                                    : 'bg-black text-white hover:bg-gray-800'
+                                }`}
                         >
-                            {/* {hasSizes && !selectedSize ? 'Seleccionar talle' : 'Añadir al carrito'} */}
+                            {productQuery.data.stock === 0
+                                ? 'Agotado'
+                                : isButtonDisabled
+                                    ? 'Seleccionar talle'
+                                    : 'Añadir al carrito'}
                         </button>
                     </div>
                 </div>
@@ -115,4 +139,5 @@ const ProductDetailPage = () => {
         </div>
     );
 };
-export default ProductDetailPage
+
+export default ProductDetailPage;
